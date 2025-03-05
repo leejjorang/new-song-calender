@@ -1,15 +1,23 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout/Layout";
+import CalenderPage from "./pages/CalenderPage";
+import SearchPage from "./pages/SearchPage";
+import AddSongPage from "./pages/AddSongPage";
+import StartPage from "./pages/StartPage";
 
-import { Button } from "./components/ui/button"
-import { Progress } from "./components/ui/progress"
-
-
-const App = () => {
+function App() {
   return (
-    <div className="p-5 space-y-2 bg-gray-100">
-      <Button>Click me</Button>
-      <Progress value={33} />
-    </div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/" element={<StartPage />} />
+        <Route element={<Layout />}>
+          <Route path="/calender" element={<CalenderPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/add-song" element={<AddSongPage />} />
+        </Route>
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
