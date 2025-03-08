@@ -5,6 +5,7 @@ import VideoCard from "@/components/VideoCard";
 import { useEffect, useRef, useState } from "react";
 import { useYouTubeSearch } from "@/hooks/useYoutubeSearch";
 import { Loader2 } from "lucide-react";
+import he from "he";
 
 const SearchPage = () => {
   const [query, setQuery] = useState("");
@@ -67,8 +68,8 @@ const SearchPage = () => {
           page.items.map((video: any) => (
             <VideoCard
               key={video.id?.videoId || video.etag}
-              title={video.snippet.title}
-              channel={video.snippet.channelTitle}
+              title={he.decode(video.snippet.title)}
+              channel={he.decode(video.snippet.channelTitle)}
               thumbnail={video.snippet.thumbnails.default.url}
             />
           ))
