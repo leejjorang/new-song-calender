@@ -2,26 +2,46 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import VideoCard from "@/components/VideoCard";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useYouTubeSearch } from "@/hooks/useYoutubeSearch";
+import { Loader2 } from "lucide-react";
 
 const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [isSearchActive, setIsSearchActive] = useState(false);
-  const { data, isLoading, isError, refetch, nextPageToken, setNextPageToken } =
+  const { data, isLoading, isError, fetchNextPage, hasNextPage } =
     useYouTubeSearch(query, isSearchActive);
+  const observerRef = useRef(null);
 
   const handleSearch = () => {
     if (query.trim() !== "") {
       setIsSearchActive(true);
-      setNextPageToken(null);
-      refetch();
     }
   };
 
   useEffect(() => {
     setIsSearchActive(false);
   }, [query]);
+
+  //무한스크롤
+  useEffect(() => {
+    if (!hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [hasNextPage, fetchNextPage]);
 
   console.log(data, isError);
 
@@ -43,25 +63,23 @@ const SearchPage = () => {
         </Button>
       </div>
       <div className="flex flex-col items-center">
-        {data?.items.map((video) => (
-          <VideoCard
-            key={video.id?.videoId || video.etag}
-            title={video.snippet.title}
-            channel={video.snippet.channelTitle}
-            thumbnail={video.snippet.thumbnails.default.url}
-          />
-        ))}
-        <VideoCard
-          title="어쩌구 저쩌구 매우 긴 제목이 있다고 합니다람쥐 여기서 더 길어야 한다구"
-          channel="어쩌구채널"
-          thumbnail="https://i.ytimg.com/vi/A3TAPTU7fWk/default.jpg"
-        />
-        <VideoCard
-          title="짧은 제목"
-          channel="짧은채널"
-          thumbnail="https://i.ytimg.com/vi/A3TAPTU7fWk/default.jpg"
-        />
+        {data?.pages.map((page) =>
+          page.items.map((video: any) => (
+            <VideoCard
+              key={video.id?.videoId || video.etag}
+              title={video.snippet.title}
+              channel={video.snippet.channelTitle}
+              thumbnail={video.snippet.thumbnails.default.url}
+            />
+          ))
+        )}
       </div>
+      {isLoading && (
+        <div className="flex justify-center">
+          <Loader2 className="animate-spin text-[#958B82] " />
+        </div>
+      )}
+      <div ref={observerRef} className="h-10" />
     </div>
   );
 };
