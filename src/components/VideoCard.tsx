@@ -4,11 +4,15 @@ interface VideoCardProps {
   title: string;
   channel: string;
   thumbnail: string;
+  onClick: () => void;
 }
 
-const VideoCard = ({ title, channel, thumbnail }: VideoCardProps) => {
+const VideoCard = ({ title, channel, thumbnail, onClick }: VideoCardProps) => {
   return (
-    <Card className="flex gap-4 items-center p-2 border-b w-[88%] md:w-[60%] shadow-none border-none bg-transparent">
+    <Card
+      onClick={onClick}
+      className="flex gap-4 items-center p-2 border-b w-[88%] md:w-[60%] shadow-none border-none bg-transparent"
+    >
       <div className="w-[88px] h-[60px] rounded-xs flex-shrink-0">
         <img
           src={thumbnail}

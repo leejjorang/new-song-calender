@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useYouTubeSearch } from "@/hooks/useYoutubeSearch";
 import { Loader2 } from "lucide-react";
 import he from "he";
+import { useNavigate, useParams } from "react-router-dom";
 
 const SearchPage = () => {
   const [query, setQuery] = useState("");
@@ -13,16 +14,25 @@ const SearchPage = () => {
   const { data, isLoading, isError, fetchNextPage, hasNextPage } =
     useYouTubeSearch(query, isSearchActive);
   const observerRef = useRef(null);
+  const { day } = useParams();
+  const navigate = useNavigate();
 
   const handleSearch = () => {
     if (query.trim() !== "") {
       setIsSearchActive(true);
+      setTimeout(() => setIsSearchActive(false), 500);
     }
   };
 
-  useEffect(() => {
-    setIsSearchActive(false);
-  }, [query]);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
+  const handleVideoClick = (videoId: string, title: string) => {
+    navigate(`/add-song/${day}/${videoId}`, { state: { title } });
+  };
 
   //무한스크롤
   useEffect(() => {
@@ -44,7 +54,7 @@ const SearchPage = () => {
     return () => observer.disconnect();
   }, [hasNextPage, fetchNextPage]);
 
-  console.log(data, isError);
+  //console.log(data, isError);
 
   return (
     <div className="flex flex-grow w-[100%] flex-col gap-4">
@@ -54,6 +64,7 @@ const SearchPage = () => {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="bg-transparent focus:border-white h-12 w-[60%] md:w-[50%] m-3 shadow-none focus-visible:ring-[#958B82]"
         />
         <Button
@@ -71,6 +82,12 @@ const SearchPage = () => {
               title={he.decode(video.snippet.title)}
               channel={he.decode(video.snippet.channelTitle)}
               thumbnail={video.snippet.thumbnails.default.url}
+              onClick={() =>
+                handleVideoClick(
+                  video.id.videoId,
+                  he.decode(video.snippet.title)
+                )
+              }
             />
           ))
         )}

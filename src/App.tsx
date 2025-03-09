@@ -18,8 +18,8 @@ function App() {
           <Route path="/" element={<StartPage />} />
           <Route element={<Layout />}>
             <Route path="/calender" element={<CalenderPage />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/add-song" element={<AddSongPage />} />
+            <Route path="/search/:day" element={<SearchPage />} />
+            <Route path="/add-song/:day/:videoId" element={<AddSongPage />} />
           </Route>
         </Routes>
       </Router>

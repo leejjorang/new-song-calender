@@ -17,6 +17,7 @@ interface IDayProps {
   bgColor?: string;
   number: number;
   visible: boolean;
+  onClick: () => void;
 }
 
 const iconMap: { [key: number]: string } = {
@@ -39,9 +40,11 @@ const Day: React.FC<IDayProps> = ({
   bgColor = "bg-deep",
   number,
   visible,
+  onClick,
 }) => {
   return (
     <div
+      onClick={onClick}
       className={`${
         isLarge ? "col-span-3 bg-[#589579]" : `${bgColor}`
       } rounded-lg flex flex-col items-center justify-between text-[#F5F5F5] text-s p-1 min-h-[4.5rem]`}
