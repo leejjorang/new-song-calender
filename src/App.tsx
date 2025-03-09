@@ -6,6 +6,7 @@ import CalenderPage from "./pages/CalenderPage";
 import SearchPage from "./pages/SearchPage";
 import AddSongPage from "./pages/AddSongPage";
 import StartPage from "./pages/StartPage";
+import EditSongPage from "./pages/EditSongPage";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="/calender" element={<CalenderPage />} />
             <Route path="/search/:day" element={<SearchPage />} />
             <Route path="/add-song/:day/:videoId" element={<AddSongPage />} />
+            <Route path="/edit-song/:day" element={<EditSongPage />} />
           </Route>
         </Routes>
       </Router>
