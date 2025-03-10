@@ -50,7 +50,12 @@ const Day: React.FC<IDayProps> = ({
       } rounded-lg flex flex-col items-center justify-between text-[#F5F5F5] text-s p-1 min-h-[4.5rem]`}
     >
       <div>{number}</div>
-      {visible && <img src={iconMap[number]} className="w-6 h-6" />}
+      {visible &&
+        (number !== 25 ? (
+          <img src={iconMap[number]} className="w-6 h-6" />
+        ) : (
+          <span>***MerryChristmas***</span>
+        ))}
     </div>
   );
 };
