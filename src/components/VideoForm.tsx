@@ -3,6 +3,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Alert from "./Alert";
+import toast, { Toaster } from "react-hot-toast";
 
 interface VideoFormProps {
   title?: string;
@@ -15,6 +17,7 @@ const VideoForm = ({ title, videoId, day, mode }: VideoFormProps) => {
   const [comment, setComment] = useState("");
   const [localTitle, setLocalTitle] = useState(title || "");
   const [localVideoId, setLocalVideoId] = useState(videoId || "");
+  const [alertOpen, setAlertOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,12 +38,13 @@ const VideoForm = ({ title, videoId, day, mode }: VideoFormProps) => {
     if (!day) return;
     const newEntry = { title: localTitle, videoId: localVideoId, comment };
     localStorage.setItem(day, JSON.stringify(newEntry));
+    toast("저장되었습니다");
   };
 
   const handleDelete = () => {
     if (!day) return;
     localStorage.removeItem(day);
-    alert("삭제되었습니다!");
+    setAlertOpen(false);
     navigate(`/calender`);
   };
 
@@ -70,7 +74,10 @@ const VideoForm = ({ title, videoId, day, mode }: VideoFormProps) => {
         </Button>
       ) : (
         <div className="flex justify-evenly w-[100%]">
-          <Button className="w-[30%] h-14 shadow-none text-xl rounded-xl">
+          <Button
+            onClick={() => setAlertOpen(true)}
+            className="w-[30%] h-14 shadow-none text-xl rounded-xl bg-[#dfddda] text-black"
+          >
             삭제
           </Button>
           <Button
@@ -79,8 +86,18 @@ const VideoForm = ({ title, videoId, day, mode }: VideoFormProps) => {
           >
             저장
           </Button>
+          <Alert
+            open={alertOpen}
+            setOpen={setAlertOpen}
+            handleDelete={handleDelete}
+          />
         </div>
       )}
+      <Toaster
+        toastOptions={{
+          style: { border: "1px solid #958B82" },
+        }}
+      />
     </>
   );
 };
